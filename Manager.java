@@ -28,7 +28,12 @@ public class Manager{
 		dictionary = new List[26];
 		ignore = new List[26];
 		added = new List[26];
-
+		for (int i = 0; i < 26; i++)
+		{
+			dictionary[i] = new List();
+			ignore[i] = new List();
+			added[i] = new List();
+		}
 		dictParser = new FileParser();
 	}
 
@@ -37,8 +42,7 @@ public class Manager{
 		String tmp = "";
 
 		for(int index = 0; index < 26; index++){
-			tmp+=dictionary[index].toString();
-			tmp+="\n";
+				tmp+=dictionary[index].toString();
 		}
 
 		return tmp;
@@ -50,7 +54,6 @@ public class Manager{
 
 		for(int index = 0; index < 26; index++){
 			tmp+=ignore[index].toString();
-			tmp+="\n";
 		}
 
 		return tmp;
@@ -62,7 +65,6 @@ public class Manager{
 
 		for(int index = 0; index < 26; index++){
 			tmp+=added[index].toString();
-			tmp+="\n";
 		}
 
 		return tmp;
@@ -78,7 +80,8 @@ public class Manager{
 
 	// adds a word to the dictionary data structure
 	public void addToDictionary(String word, int index){
-		dictionary[index].insert(word);		
+		dictionary[index].insert(word);
+		added[index].insert(word);
 	}
 
 	// adds the remaining words in the input list to the dictionary
@@ -86,6 +89,8 @@ public class Manager{
 	public void addRemaining(List[] inputList){
 		for(int index = 0; index < 26; index++){
 			dictionary[index] = dictionary[index].merge(inputList[index]);
+			added[index] = added[index].merge(inputList[index]);
+			inputList[index].deleteAll();
 		}
 	}
 
@@ -99,6 +104,7 @@ public class Manager{
 	public void ignoreRemaining(List[] inputList){
 		for(int index = 0; index < 26; index++){
 			ignore[index] = ignore[index].merge(inputList[index]);
+			inputList[index].deleteAll();
 		}
 	}
 

@@ -42,7 +42,7 @@ public class List {
 			list = inserted_node;
 			numNodes++;
 		}
-		else if (!search(inserted_word)) //if it is already in the list then move on
+		else
 		{
 			iterator = list;
 			behind = iterator;
@@ -54,7 +54,7 @@ public class List {
 			}
 			else
 			{
-				while (iterator != null && !is_inserted) //iteratre the list until a position is found or the end
+				while (iterator != null && !is_inserted) //iterate the list until a position is found or the end
 				{
 					if (iterator.word.compareToIgnoreCase(inserted_word) > 0)
 					{
@@ -62,6 +62,10 @@ public class List {
 						inserted_node.next = iterator;
 						numNodes++;
 						is_inserted = true; //finish the method word inserted
+					}
+					else if(iterator.word.compareToIgnoreCase(inserted_word) == 0)
+					{
+						is_inserted = true; //finish the method word is already in the list
 					}
 					behind = iterator;
 					iterator = iterator.next;
@@ -76,7 +80,8 @@ public class List {
 	}
 	
 	/**
-	 * Delete the parameter object if it is in the List object.
+	 * delete the string from the list that is input
+	 * @param deleted_word; word to be deleted
 	 */
 	public void delete (String deleted_word) 
 	{
@@ -91,21 +96,25 @@ public class List {
 		{
 			iterator = list;
 			behind = list;
-			if (iterator.word.compareToIgnoreCase(deleted_word) == 0)
+			while (iterator != null && !is_deleted) //iterates the list until a position is found or the end
 			{
-				list = list.next;
-				numNodes--;
-			}
-			else
-			{
-				while (iterator != null && !is_deleted) //iterates the list until a position is found or the end
+				if (iterator.word.compareToIgnoreCase(deleted_word) == 0) 
 				{
-					if (iterator.word.compareToIgnoreCase(deleted_word) == 0)
-					{
-						behind.next = iterator.next;
-						numNodes--;
-						is_deleted = true;
-					}
+					if (list == iterator) //the first word is a match and needs to be deleted
+						list = list.next;
+					else
+						behind.next = iterator.next; //skip over the iterator and allow garbage collector to sweep it up
+					behind = iterator;
+					iterator = iterator.next;
+					is_deleted = true;
+					numNodes--;
+				}
+				else if(iterator.word.compareToIgnoreCase(deleted_word) > 0) //the word isn't in the list nothing to delete
+				{
+					is_deleted = true;
+				}
+				else //No action is required and the iterator can move forward
+				{
 					behind = iterator;
 					iterator = iterator.next;
 				}
@@ -114,7 +123,8 @@ public class List {
 	}
 	
 	/**
-	 * Delete searches this.list for any of the nodes in the @param list and then removes them from this.list
+	 * delete(List) will remove everything in this.list that matches the deleted_list
+	 * @param deleted_List: list of words to delete
 	 */
 	public void delete (List deleted_List) 
 	{
@@ -133,16 +143,16 @@ public class List {
 			behind = list;
 			while (iterator != null && !is_deleted) //iterates the list until a position is found or the end
 			{
-				if (deleted_word == null)
+				if (deleted_word == null) //no more words to delete the loop can end
 				{
 					is_deleted = true;
 				}
 				else if (iterator.word.compareToIgnoreCase(deleted_word.word) == 0) 
 				{
-					if (list == iterator) //must delete from the beginning of the list
+					if (list == iterator) //the first word is a match and needs to be deleted
 						list = list.next;
 					else
-						behind.next = iterator.next;
+						behind.next = iterator.next; //skip over the iterator and allow garbage collector to sweep it up
 					deleted_word = deleted_word.next;
 					behind = iterator;
 					iterator = iterator.next;
@@ -189,78 +199,56 @@ public class List {
 		Node thisiterator = newList.list;
 		Node newiterator = list;
 		Node mergediterator = mergedList.list;
+		
 		while (thisiterator != null && newiterator != null)
 		{
-			if (thisiterator.word.compareToIgnoreCase(newiterator.word) < 0) //if this word is less than the new word add this word
-			{
-				if (mergediterator == null)
-				{
-					mergedList.insert(thisiterator.word);
-					mergediterator = mergedList.list;
-				}
-				else
-				{
-					mergediterator.next = new Node(thisiterator.word);
-					mergediterator = mergediterator.next;
-					mergedList.numNodes++;
-				}
+			//if this word is less than the new word add this word
+			if (thisiterator.word.compareToIgnoreCase(newiterator.word) < 0) { 
+				addToList(mergedList, mergediterator, thisiterator);
 				thisiterator = thisiterator.next;
 			}
-			else if (thisiterator.word.compareToIgnoreCase(newiterator.word) > 0) //if the new word is less than this word add the new word
-			{
-				if (mergediterator == null) //it's the first word to be added insert it at the head
-				{
-					mergedList.insert(newiterator.word);
-					mergediterator = mergedList.list;
-				}
-				else  //It's not the first word so make it the next word and then iterate forward
-				{
-					mergediterator.next = new Node(newiterator.word);
-					mergediterator = mergediterator.next;
-					mergedList.numNodes++;
-				}
+			//if the new word is less than this word add the new word
+			else if (thisiterator.word.compareToIgnoreCase(newiterator.word) > 0) {
+				addToList(mergedList, mergediterator, newiterator);
 				newiterator = newiterator.next;
-
 			}
 			else
-			{
-				thisiterator = thisiterator.next;
-			}
+				thisiterator = thisiterator.next; //the words are the same skip to the next word
 		}
-		while (thisiterator != null) //newiterator reached the end of it's list and now it needs to add the rest of thisList to the merged list
-		{
-			if (mergediterator == null)
-			{
-				mergedList.insert(thisiterator.word);
-				mergediterator = mergedList.list;
-			}
-			else
-			{
-				mergediterator.next = new Node(thisiterator.word);
-				mergediterator = mergediterator.next;
-				mergedList.numNodes++;
-			}
-			thisiterator = thisiterator.next;			
+		
+		while (thisiterator != null) {
+			//newiterator reached the end of it's list and now it needs to add the rest of thisList to the merged list
+			addToList(mergedList, mergediterator, thisiterator);
+			thisiterator = thisiterator.next;
 		}
-		while (newiterator != null) //thisiterator reached the end of it's list and now it needs to add the rest of newList to the merged list
-		{
-			if (mergediterator == null) //it's the first word to be added insert it at the head
-			{
-				mergedList.insert(newiterator.word);
-				mergediterator = mergedList.list;
-			}
-			else
-			{
-				mergediterator.next = new Node(newiterator.word);
-				mergediterator = mergediterator.next;
-				mergedList.numNodes++;
-			}
+		
+		while (newiterator != null) {
+			//thisiterator reached the end of it's list and now it needs to add the rest of newList to the merged list
+			addToList(mergedList, mergediterator, newiterator);
 			newiterator = newiterator.next;
 		}
 		mergedList.numNodes = numNodes + newList.numNodes;
 		return mergedList;	
 	} 
-
+	/**
+	 * method to add to a list given the final node and the head used for the merge
+	 * @param mainList: the main list of that the node will be added to
+	 * @param mainIterator: an iterator indicating the last position of the list
+	 * @param addedNode: the node to be added to the list
+	 */
+	private void addToList(List mainList, Node mainIterator, Node addedNode)
+	{
+		if (mainIterator == null)
+		{
+			mainList.insert(addedNode.word);
+			mainIterator = mainList.list;
+		}
+		else
+		{
+			mainIterator.next = new Node(addedNode.word);
+			mainIterator = mainIterator.next;
+		}
+	}
 	/**
 	 * Search will search for the list for the given word a
 	 */
@@ -294,16 +282,16 @@ public class List {
 		while (iterator != null)
 		{
 			outputString = outputString + iterator.word;
-			if (iterator.next != null) //makes sure the final word does not add a \n character to the end
-				outputString = outputString + "\n";
+			outputString = outputString + "\n";
 			iterator = iterator.next;
 		}
 		return outputString;
 	 }
 	 
 	 /**
-	  * The Node class creates the nodes that will make up the linked list
-	  * The word word will store the int and String to implement the linked list
+	  * 
+	  * The Node class is implemented in the linked list to store all the words
+	  *
 	  */
 	 private class Node
 	 {

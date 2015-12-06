@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class SpellChecker {
 
@@ -7,14 +8,16 @@ public class SpellChecker {
 		 *********************************************/
 		
 			Manager manager;
-			InputParser inputParser;
+			FileParser inputParser;
 			List [] inputList;
-			
 			SpellChecker(){
 			
 				manager = new Manager();
 				inputParser = new FileParser();
-				inputList = new List[26];		
+				inputList = new List[26];	
+				for (int i = 0; i < 26; i++){
+					inputList[i] = new List();
+				}
 			}
 		
 		/******************************************
@@ -26,30 +29,14 @@ public class SpellChecker {
 				return manager.getDictionary();
 			}
 			
-			String getInpuList(){
+			String getInputList(){
 				
 				String completeList = "";
-				String inputListOutput;
-				//PrintWriter PrintWriter = new PrintWriter ("dictionary.txt");
-				for (int i = 0; i < 25; i++)
+				for (int i = 0; i < 26; i++)
 				{
-					inputListOutput = inputList[i].toString();
-					if (inputListOutput.compareTo("") != 0) //prevents empty lines from being written out
-					{
-						completeList = completeList + inputListOutput + "\n";
-						//PrintWriter.println(inputList[i].toString());
-					}
+					completeList = completeList + inputList[i].toString() ;
 				}
-				//ensures there is is no empty line at the end of the dictionary/input file
-				inputListOutput = inputList[25].toString();
-				if (inputListOutput.compareTo("") != 0) //prevents empty lines from being written out
-				{
-					completeList = completeList + inputListOutput;
-				}
-				//PrintWriter.print(inputList[25].toString());
-				//PrintWriter.print(completeoutput);
 				return completeList;
-				//PrintWriter.close();	
 			}
 			
 			String getIgnore(){
@@ -67,24 +54,32 @@ public class SpellChecker {
 		 				Add Methods
 		*********************************************/
 			
-			void addToDictionary(String word, int index){
+			void addToDictionary(String word){
 				
-				manager.addToDictionary(word,index);			
+				manager.addToDictionary(word,hash(word));
+				inputList[hash(word)].delete(word);
 			}
 			
-			void addToIgnore(String word, int index){
+			void addToIgnore(String word){
 				
-				manager.addToIgnore(word,index);			
+				manager.addToIgnore(word,hash(word));	
+				inputList[hash(word)].delete(word);
 			}
 			
 			void addRemainngToDictionary(){
 				
-				manager.addRemaining(this.inputList);			
+				manager.addRemaining(this.inputList);
+				for (int i = 0; i < 26; i++){
+					inputList[i].deleteAll();
+				}
 			}
 			
 			void ignoreRemaining(){
 				
-				manager.ignoreRemaining(this.inputList);			
+				manager.ignoreRemaining(this.inputList);	
+				for (int i = 0; i < 26; i++){
+					inputList[i].deleteAll();
+				}
 			}
 	
 		/********************************************************************
@@ -98,7 +93,13 @@ public class SpellChecker {
 			
 			void createInputList(File inputFile){
 				
-				inputParser.parse(inputList,inputFile);
+				try {
+					inputParser.parse(inputList,inputFile);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				manager.updateInputList(inputList);
 			}
 			
 			private int hash(String word)
