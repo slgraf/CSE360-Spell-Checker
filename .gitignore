@@ -2,6 +2,9 @@
 Thumbs.db
 ehthumbs.db
 
+# Project stuff
+*.class
+
 # Folder config file
 Desktop.ini
 
