@@ -189,61 +189,74 @@ public class List {
 		Node thisiterator = newList.list;
 		Node newiterator = list;
 		Node mergediterator = mergedList.list;
-		int index = 0;
 		while (thisiterator != null && newiterator != null)
 		{
-			if (thisiterator.word.compareToIgnoreCase(newiterator.word) < 0)
+			if (thisiterator.word.compareToIgnoreCase(newiterator.word) < 0) //if this word is less than the new word add this word
 			{
 				if (mergediterator == null)
 				{
 					mergedList.insert(thisiterator.word);
 					mergediterator = mergedList.list;
-					thisiterator = thisiterator.next;
 				}
 				else
 				{
 					mergediterator.next = new Node(thisiterator.word);
 					mergediterator = mergediterator.next;
 					mergedList.numNodes++;
-					thisiterator = thisiterator.next;
 				}
+				thisiterator = thisiterator.next;
 			}
-			else if (thisiterator.word.compareToIgnoreCase(newiterator.word) > 0)
+			else if (thisiterator.word.compareToIgnoreCase(newiterator.word) > 0) //if the new word is less than this word add the new word
 			{
-				if (mergediterator == null)
+				if (mergediterator == null) //it's the first word to be added insert it at the head
 				{
 					mergedList.insert(newiterator.word);
 					mergediterator = mergedList.list;
-					newiterator = newiterator.next;
 				}
-				else 
+				else  //It's not the first word so make it the next word and then iterate forward
 				{
 					mergediterator.next = new Node(newiterator.word);
 					mergediterator = mergediterator.next;
 					mergedList.numNodes++;
-					newiterator = newiterator.next;
 				}
+				newiterator = newiterator.next;
+
 			}
 			else
 			{
 				thisiterator = thisiterator.next;
 			}
 		}
-		while (thisiterator != null) //newiterator reached the end of it's lest and now it needs to add the rest of thisList to the merged list
+		while (thisiterator != null) //newiterator reached the end of it's list and now it needs to add the rest of thisList to the merged list
 		{
-			mergediterator.next = new Node(thisiterator.word);
-			mergediterator = mergediterator.next;
-			mergedList.numNodes++;
+			if (mergediterator == null)
+			{
+				mergedList.insert(thisiterator.word);
+				mergediterator = mergedList.list;
+			}
+			else
+			{
+				mergediterator.next = new Node(thisiterator.word);
+				mergediterator = mergediterator.next;
+				mergedList.numNodes++;
+			}
 			thisiterator = thisiterator.next;			
 		}
-		while (newiterator != null) //thisiterator reached the end of it's lest and now it needs to add the rest of newList to the merged list
+		while (newiterator != null) //thisiterator reached the end of it's list and now it needs to add the rest of newList to the merged list
 		{
-			mergediterator.next = new Node(newiterator.word);
-			mergediterator = mergediterator.next;
-			mergedList.numNodes++;
+			if (mergediterator == null) //it's the first word to be added insert it at the head
+			{
+				mergedList.insert(newiterator.word);
+				mergediterator = mergedList.list;
+			}
+			else
+			{
+				mergediterator.next = new Node(newiterator.word);
+				mergediterator = mergediterator.next;
+				mergedList.numNodes++;
+			}
 			newiterator = newiterator.next;
 		}
-
 		mergedList.numNodes = numNodes + newList.numNodes;
 		return mergedList;	
 	} 
@@ -294,7 +307,7 @@ public class List {
 	  */
 	 private class Node
 	 {
-		 private String word;
+		 private String word= "";
 		 private Node next = null;
 		 Node(String new_word)
 		 {
