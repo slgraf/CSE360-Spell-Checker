@@ -1,6 +1,6 @@
 /**
  * The List class implements the linked list using String as the word
- * It provides insertion, deletion, string, copy, merge, get and index methods
+ * It provides insertion, deletion, merge, and toString() methods.
  * to process word from the linked list 
  * The class is made of up a list which holds the root node of the linked list
  * an int numNodes which is the number of nodes in the linked list
@@ -113,6 +113,9 @@ public class List {
 		}
 	}
 	
+	/**
+	 * Delete searches this.list for any of the nodes in the @param list and then removes them from this.list
+	 */
 	public void delete (List deleted_List) 
 	{
 		Node iterator;
@@ -134,9 +137,9 @@ public class List {
 				{
 					is_deleted = true;
 				}
-				else if (iterator.word.compareToIgnoreCase(deleted_word.word) == 0)
+				else if (iterator.word.compareToIgnoreCase(deleted_word.word) == 0) 
 				{
-					if (list == iterator)
+					if (list == iterator) //must delete from the beginning of the list
 						list = list.next;
 					else
 						behind.next = iterator.next;
@@ -145,17 +148,24 @@ public class List {
 					iterator = iterator.next;
 					numNodes--;
 				}
-				else if(iterator.word.compareToIgnoreCase(deleted_word.word) > 0)
+				else if(iterator.word.compareToIgnoreCase(deleted_word.word) > 0) //the iterator has reach a point where this.list's words are farther in the alphabet than the iterator
 				{
 					deleted_word = deleted_word.next;
 				}
-				else
+				else //No action is required and the iterator can move forward
 				{
 					behind = iterator;
 					iterator = iterator.next;
 				}
 			}
 		}
+	}
+	/**
+	 * Completely wipes the list clean of any words
+	 */
+	public void deleteAll ()
+	{
+		list = null;
 	}
 	
 	/**
@@ -219,14 +229,14 @@ public class List {
 				thisiterator = thisiterator.next;
 			}
 		}
-		while (thisiterator != null)
+		while (thisiterator != null) //newiterator reached the end of it's lest and now it needs to add the rest of thisList to the merged list
 		{
 			mergediterator.next = new Node(thisiterator.word);
 			mergediterator = mergediterator.next;
 			mergedList.numNodes++;
 			thisiterator = thisiterator.next;			
 		}
-		while (newiterator != null)
+		while (newiterator != null) //thisiterator reached the end of it's lest and now it needs to add the rest of newList to the merged list
 		{
 			mergediterator.next = new Node(newiterator.word);
 			mergediterator = mergediterator.next;
@@ -237,7 +247,6 @@ public class List {
 		mergedList.numNodes = numNodes + newList.numNodes;
 		return mergedList;	
 	} 
-	//creates a new node with the word of the non-empty node
 
 	/**
 	 * Search will search for the list for the given word a
@@ -263,9 +272,7 @@ public class List {
 	}
 	
 	/**
-	 * Copies the contents of the collection List object to an array.  The array contains the 
-	 * same number of elements as the original collection and objects are in the same order.
-	 * @return String of the elements in the list
+	 * Returns a string of the words in the list separated by the \n char
 	 */
 	 public String toString() 
 	 {
@@ -274,7 +281,7 @@ public class List {
 		while (iterator != null)
 		{
 			outputString = outputString + iterator.word;
-			if (iterator.next != null)
+			if (iterator.next != null) //makes sure the final word does not add a \n character to the end
 				outputString = outputString + "\n";
 			iterator = iterator.next;
 		}
