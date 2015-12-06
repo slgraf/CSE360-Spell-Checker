@@ -15,7 +15,6 @@ public class FileParser
 	//constructor does nothing since the InputParser doesn't hold any data
 		FileParser()
 		{}
-		
 		//parse will in-take the inputList array and inputList.txt file and fill the array with all of the words from the file
 		public void parse(List[] inputList, File file) throws FileNotFoundException
 		{
