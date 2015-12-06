@@ -13,7 +13,7 @@ public class SpellChecker {
 			SpellChecker(){
 			
 				manager = new Manager();
-				inputParser = new InputParser();
+				inputParser = new FileParser();
 				inputList = new List[26];		
 			}
 		
@@ -21,22 +21,43 @@ public class SpellChecker {
 		 			Get Methods
 		*********************************************/
 		
-			List[] getDictionary(){
+			String getDictionary(){
 				
 				return manager.getDictionary();
 			}
 			
-			List[] getInpuList(){
+			String getInpuList(){
 				
-				return this.inputList;		
+				String completeList = "";
+				String inputListOutput;
+				//PrintWriter PrintWriter = new PrintWriter ("dictionary.txt");
+				for (int i = 0; i < 25; i++)
+				{
+					inputListOutput = inputList[i].toString();
+					if (inputListOutput.compareTo("") != 0) //prevents empty lines from being written out
+					{
+						completeList = completeList + inputListOutput + "\n";
+						//PrintWriter.println(inputList[i].toString());
+					}
+				}
+				//ensures there is is no empty line at the end of the dictionary/input file
+				inputListOutput = inputList[25].toString();
+				if (inputListOutput.compareTo("") != 0) //prevents empty lines from being written out
+				{
+					completeList = completeList + inputListOutput;
+				}
+				//PrintWriter.print(inputList[25].toString());
+				//PrintWriter.print(completeoutput);
+				return completeList;
+				//PrintWriter.close();	
 			}
 			
-			List[] getIgnore(){
+			String getIgnore(){
 				
 				return manager.getIgnore();		
 			}
 			
-			List[] getAdded(){
+			String getAdded(){
 				
 				return manager.getAdded();			
 			}
@@ -58,12 +79,12 @@ public class SpellChecker {
 			
 			void addRemainngToDictionary(){
 				
-				manager.addRemainingToDictionary();			
+				manager.addRemaining(this.inputList);			
 			}
 			
 			void ignoreRemaining(){
 				
-				manager.ignoreRemaining();			
+				manager.ignoreRemaining(this.inputList);			
 			}
 	
 		/********************************************************************
@@ -78,10 +99,15 @@ public class SpellChecker {
 			void createInputList(File inputFile){
 				
 				inputParser.parse(inputList,inputFile);
-				
-				
 			}
 			
-			
+			private int hash(String word)
+			{
+				char firstLetter;
+				int ascii;
+				firstLetter = word.charAt(0);
+				ascii = (int) Character.toLowerCase(firstLetter);
+				return ascii - 97;
+			}
 	
 }
