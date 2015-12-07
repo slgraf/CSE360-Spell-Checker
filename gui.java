@@ -35,6 +35,12 @@ import javax.swing.Action;
 import java.awt.Button;
 import javax.swing.JList;
 import java.awt.Dimension;
+import javax.swing.JSeparator;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.AbstractListModel;
+import java.awt.ComponentOrientation;
+import javax.swing.ListSelectionModel;
 
 public class gui {
 	
@@ -73,8 +79,10 @@ public class gui {
 	private void initialize() {
 		frmCse = new JFrame();
 		frmCse.setType(Type.UTILITY);
+		frmCse.setResizable(false);
+		frmCse.setAlwaysOnTop(true);
 		frmCse.setTitle("CSE 360 - SpellChcker - Final Project");
-		frmCse.setBounds(100, 100, 450, 300);
+		frmCse.setBounds(100, 100, 330, 290);
 		frmCse.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -108,6 +116,9 @@ public class gui {
 				System.exit(0);
 			}
 		});
+		
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
 		mnFile.add(mntmNewMenuItem_1);
 		
 		JMenu mnNewMenu = new JMenu("Help");
@@ -164,6 +175,21 @@ public class gui {
 		frmCse.getContentPane().add(panel_wordList, BorderLayout.CENTER);
 		
 		JList list = new JList();
+		list.setMaximumSize(new Dimension(170, 206));
+		list.setVisibleRowCount(12);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setPreferredSize(new Dimension(170, 206));
+		list.setMinimumSize(new Dimension(170, 206));
+		list.setModel(new AbstractListModel() {
+			String[] values = new String[] {"testing", "with", "fake", "random", "data"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		list.setBackground(Color.WHITE);
 		panel_wordList.add(list);
 		
