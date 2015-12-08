@@ -10,6 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.Window.Type;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import java.awt.event.ActionListener;
@@ -46,9 +47,9 @@ public class gui {
 	
 	JFileChooser fc;
 
-
 	private JFrame frmCse;
 	private final Action action = new SwingAction();
+
 
 	/**
 	 * Launch the application.
@@ -78,11 +79,11 @@ public class gui {
 	 */
 	private void initialize() {
 		frmCse = new JFrame();
-		frmCse.setType(Type.UTILITY);
 		frmCse.setResizable(false);
+		frmCse.setType(Type.UTILITY);
 		frmCse.setAlwaysOnTop(true);
 		frmCse.setTitle("CSE 360 - SpellChcker - Final Project");
-		frmCse.setBounds(100, 100, 330, 290);
+		frmCse.setBounds(100, 100, 330, 320);
 		frmCse.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -125,7 +126,15 @@ public class gui {
 		menuBar.add(mnNewMenu);
 		
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("About");
-		mntmNewMenuItem_2.setEnabled(false);
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(frmCse, "Created by\n"
+						+ "\nA. Edwards,"
+						+ "\nS. Graf,"
+						+ "\nM. Kuna,"
+						+ "\nD. Rydstrom.", "About", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem_2);
 		
 		JPanel panel_currFile = new JPanel();
@@ -151,20 +160,23 @@ public class gui {
 		btn_add_to_dict.setEnabled(false);
 		btn_add_to_dict.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		JButton btn_quit = new JButton("Quit");
+		btn_quit.setAction(action);
+	
+		JButton btnNewButton = new JButton("Add Remaining");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		panel_buttons.add(btnNewButton, "cell 0 3,growx,aligny center");
+		
 		JButton btn_ignore = new JButton("Ignore");
 		btn_ignore.setEnabled(false);
-		panel_buttons.add(btn_ignore, "cell 0 3,growx,aligny top");
+		panel_buttons.add(btn_ignore, "cell 0 4,growx,aligny top");
 		
 		JButton btn_ignore_r = new JButton("Ignore Remaining");
 		btn_ignore_r.setEnabled(false);
-		panel_buttons.add(btn_ignore_r, "cell 0 4,growx");
-		
-		JButton btn_quit = new JButton("Quit");
-		btn_quit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
+		panel_buttons.add(btn_ignore_r, "cell 0 5,growx");
 		
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		panel_buttons.add(rigidArea_1, "cell 0 6");
@@ -175,11 +187,12 @@ public class gui {
 		frmCse.getContentPane().add(panel_wordList, BorderLayout.CENTER);
 		
 		JList list = new JList();
-		list.setMaximumSize(new Dimension(170, 206));
+		list.setSize(new Dimension(170, 230));
+		list.setMaximumSize(new Dimension(170, 231));
 		list.setVisibleRowCount(12);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setPreferredSize(new Dimension(170, 206));
-		list.setMinimumSize(new Dimension(170, 206));
+		list.setPreferredSize(new Dimension(170, 231));
+		list.setMinimumSize(new Dimension(170, 231));
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"testing", "with", "fake", "random", "data"};
 			public int getSize() {
