@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -37,7 +38,7 @@ public class gui extends JPanel implements ActionListener {
 	private boolean isFileOpen = false;
 	private JFrame frm;
 	private JLabel lbl_filePath;
-	private JList<?> list;
+	private JList<String> list;
 	private JMenuBar menuBar;
 	private JMenuItem m_File, m_Help, mi_OpenFile, mi_Exit, mi_About;
 	private JButton btn_start, btn_add, btn_add_r, btn_ignore, btn_ignore_r, btn_quit;
@@ -161,7 +162,8 @@ public class gui extends JPanel implements ActionListener {
 		pnl_wordList = new JPanel();
 		getFrm().getContentPane().add(pnl_wordList, BorderLayout.CENTER);
 		
-		list = new JList();
+		DefaultListModel listModel = new DefaultListModel();
+		list = new JList(listModel);
 		list.setSize(new Dimension(170, 230));
 		list.setMaximumSize(new Dimension(170, 231));
 		list.setVisibleRowCount(12);
