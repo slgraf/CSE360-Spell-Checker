@@ -1,55 +1,42 @@
-import java.awt.EventQueue;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Window.Type;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-import javax.swing.JFrame;
+import javax.swing.AbstractListModel;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
-import java.awt.BorderLayout;
-import javax.swing.JLayeredPane;
-import javax.swing.JMenuBar;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
-import java.awt.Window.Type;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.io.File;
 import javax.swing.JPanel;
-import java.awt.Label;
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import java.awt.Button;
-import javax.swing.JList;
-import java.awt.Dimension;
 import javax.swing.JSeparator;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.AbstractListModel;
-import java.awt.ComponentOrientation;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EtchedBorder;
+
+import net.miginfocom.swing.MigLayout;
 
 public class gui extends JPanel implements ActionListener {
+	
+	/**
+	 * Serialization for implementing the ActionListener
+	 */
+	private static final long serialVersionUID = -6995306994174311730L;
 	
 	protected JFileChooser fc;
 	private boolean isFileOpen = false;
 	private JFrame frm;
 	private JLabel lbl_filePath;
-	private JList list;
+	private JList<?> list;
 	private JMenuBar menuBar;
 	private JMenuItem m_File, m_Help, mi_OpenFile, mi_Exit, mi_About;
 	private JButton btn_start, btn_add, btn_add_r, btn_ignore, btn_ignore_r, btn_quit;
@@ -57,19 +44,19 @@ public class gui extends JPanel implements ActionListener {
 
 
 	/**
-	 * Launch the application.
+	 * Gets the main JFrame window
+	 * @return the frm
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					gui window = new gui();
-					window.frm.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public JFrame getFrm() {
+		return frm;
+	}
+
+	/**
+	 * Sets the main JFrame window
+	 * @param frm the frm to set
+	 */
+	public void setFrm(JFrame frm) {
+		this.frm = frm;
 	}
 
 	/**
@@ -83,17 +70,17 @@ public class gui extends JPanel implements ActionListener {
 	 * Initialize the main application window / frame
 	 */
 	private void initialize() {
-		frm = new JFrame();
-		frm.setResizable(false);
-		frm.setType(Type.UTILITY);
-		frm.setAlwaysOnTop(true);
-		frm.setTitle("CSE 360 - SpellChecker - Final Project");
-		frm.setBounds(100, 100, 330, 320);
-		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setFrm(new JFrame());
+		getFrm().setResizable(false);
+		getFrm().setType(Type.UTILITY);
+		getFrm().setAlwaysOnTop(true);
+		getFrm().setTitle("CSE 360 - SpellChecker - Final Project");
+		getFrm().setBounds(100, 100, 330, 320);
+		getFrm().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Menu Bar
 		init_menu();
-		frm.setJMenuBar(menuBar);
+		getFrm().setJMenuBar(menuBar);
 		
 		// Panel Components
 		init_panel();
@@ -124,14 +111,14 @@ public class gui extends JPanel implements ActionListener {
 
 	private void init_panel(){
 		pnl_currFile = new JPanel();
-		frm.getContentPane().add(pnl_currFile, BorderLayout.SOUTH);
+		getFrm().getContentPane().add(pnl_currFile, BorderLayout.SOUTH);
 		
 		lbl_filePath = new JLabel("Waiting for file...");
 		pnl_currFile.add(lbl_filePath);
 		
 		pnl_buttons = new JPanel();
 		pnl_buttons.setBorder(null);
-		frm.getContentPane().add(pnl_buttons, BorderLayout.EAST);
+		getFrm().getContentPane().add(pnl_buttons, BorderLayout.EAST);
 		pnl_buttons.setLayout(new MigLayout("", "[115px]", "[22px][23px][23px][][][][][][]"));
 		
 		btn_start = new JButton("Start Spell Check");
@@ -167,7 +154,7 @@ public class gui extends JPanel implements ActionListener {
 		pnl_buttons.add(btn_quit, "cell 0 8,alignx center,aligny center");
 		
 		pnl_wordList = new JPanel();
-		frm.getContentPane().add(pnl_wordList, BorderLayout.CENTER);
+		getFrm().getContentPane().add(pnl_wordList, BorderLayout.CENTER);
 		
 		list = new JList();
 		list.setSize(new Dimension(170, 230));
@@ -306,7 +293,7 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "OPENFILE"){
 				fc = new JFileChooser();
-				int returnVal = fc.showOpenDialog(frm);
+				int returnVal = fc.showOpenDialog(getFrm());
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
@@ -375,7 +362,7 @@ public class gui extends JPanel implements ActionListener {
 	 * and the user attempts to start spell checking
 	 */
 	private void displayWarning() {
-		JOptionPane.showMessageDialog(frm, "Cannot start, no file loaded!"
+		JOptionPane.showMessageDialog(getFrm(), "Cannot start, no file loaded!"
 				+ "\n"
 				+ "\nChoose File < Open File..."
 				, "Please select a file", JOptionPane.WARNING_MESSAGE);
@@ -385,7 +372,7 @@ public class gui extends JPanel implements ActionListener {
 	 * Show program information dialog box
 	 */
 	private void displayAbout() {
-		JOptionPane.showMessageDialog(frm, "Created by\n"
+		JOptionPane.showMessageDialog(getFrm(), "Created by\n"
 				+ "\nA. Edwards,"
 				+ "\nS. Graf,"
 				+ "\nM. Kuna,"
