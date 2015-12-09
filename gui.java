@@ -44,6 +44,7 @@ public class gui extends JPanel implements ActionListener {
 	private JButton btn_start, btn_add, btn_add_r, btn_ignore, btn_ignore_r, btn_quit;
 	private JPanel pnl_currFile, pnl_buttons, pnl_wordList;
 	private SpellChecker checker;
+	private DefaultListModel listModel;
 
 
 
@@ -162,7 +163,7 @@ public class gui extends JPanel implements ActionListener {
 		pnl_wordList = new JPanel();
 		getFrm().getContentPane().add(pnl_wordList, BorderLayout.CENTER);
 		
-		DefaultListModel listModel = new DefaultListModel();
+		listModel = new DefaultListModel();
 		list = new JList(listModel);
 		list.setSize(new Dimension(170, 230));
 		list.setMaximumSize(new Dimension(170, 231));
@@ -352,9 +353,10 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_ignore() {
+		String word = list.getSelectedValue();
 		int index = list.getSelectedIndex();
-		list.remove(index);
-		String word = (String) list.getSelectedValue();
+		if(index >= 0)
+			listModel.remove(index);
 		checker.addToIgnore(word);
 	}
 
@@ -364,8 +366,11 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_add() {
-		// TODO
-		
+		String word = list.getSelectedValue();
+		int index = list.getSelectedIndex();
+		if(index >= 0)
+			listModel.remove(index);
+		checker.addToDictionary(word);		
 	}
 
 	/**
