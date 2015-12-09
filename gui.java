@@ -26,6 +26,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
@@ -172,15 +173,25 @@ public class gui extends JPanel implements ActionListener {
 		
 		listModel = new DefaultListModel();
 		list = new JList(listModel);
-		list.setSize(new Dimension(170, 230));
-		list.setMaximumSize(new Dimension(170, 231));
-		list.setVisibleRowCount(12);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setPreferredSize(new Dimension(170, 231));
-		list.setMinimumSize(new Dimension(170, 231));
-		list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		list.setBackground(Color.WHITE);
+	//	list.setSize(new Dimension(170, 230));
+	//	list.setMaximumSize(new Dimension(170, 231));
+	//	list.setVisibleRowCount(12);
+	//	list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	//	list.setPreferredSize(new Dimension(170, 231));
+	//	list.setMinimumSize(new Dimension(170, 231));
+	//	list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	//	list.setBackground(Color.WHITE);
 		pnl_wordList.add(list);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportView(list);
+		scrollPane.setSize(new Dimension(170, 230));
+		scrollPane.setMaximumSize(new Dimension(170, 231));
+		scrollPane.setPreferredSize(new Dimension(170, 231));
+		scrollPane.setMinimumSize(new Dimension(170, 231));
+		scrollPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		scrollPane.setBackground(Color.WHITE);
+		pnl_wordList.add(scrollPane);
 	}
 
 	/**
@@ -325,7 +336,6 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "HALT"){
 				File dictionary = new File("dictionary.txt");
-
 				try{
 					if(!dictionary.exists())
 						dictionary.createNewFile();
@@ -334,7 +344,7 @@ public class gui extends JPanel implements ActionListener {
 				try {
 					PrintWriter writer = new PrintWriter(dictionary, "UTF-8");
 					writer.println(checker.getDictionary());
-					writer.close();
+					writer.close();	
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
