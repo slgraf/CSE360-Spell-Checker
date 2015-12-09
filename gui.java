@@ -6,6 +6,7 @@ import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
@@ -41,6 +42,8 @@ public class gui extends JPanel implements ActionListener {
 	private JMenuItem m_File, m_Help, mi_OpenFile, mi_Exit, mi_About;
 	private JButton btn_start, btn_add, btn_add_r, btn_ignore, btn_ignore_r, btn_quit;
 	private JPanel pnl_currFile, pnl_buttons, pnl_wordList;
+	private SpellChecker checker;
+
 
 
 	/**
@@ -64,6 +67,8 @@ public class gui extends JPanel implements ActionListener {
 	 */
 	public gui() {
 		initialize();
+		checker = new SpellChecker();
+		checker.createDictionary(new File("dictionary.txt"));
 	}
 
 	/**
