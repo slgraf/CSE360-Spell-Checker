@@ -117,4 +117,18 @@ public class Manager{
 				inputList[index].delete(ignore[index]);
 		}
 	}
+	
+	//clears entire list
+	public void clearIgnore(){
+		for(int index = 0; index < ignore.length; index++){
+			ignore[index].deleteAll();
+		}
+	}
+	
+	//clears entire list
+	public void clearAdded(){
+		for(int index = 0; index < added.length; index++){
+			added[index].deleteAll();
+		}
+	}
 } //end manager class

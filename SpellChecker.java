@@ -102,6 +102,16 @@ public class SpellChecker {
 				manager.updateInputList(inputList);
 			}
 			
+			//clears entire ignore list
+			public void clearIgnore(){
+				manager.clearIgnore();
+			}
+			
+			//clears entire added list
+			public void clearAdded(){
+				manager.clearAdded();
+			}
+			
 			private int hash(String word)
 			{
 				char firstLetter;

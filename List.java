@@ -175,7 +175,7 @@ public class List {
 	 */
 	public void deleteAll ()
 	{
-		list = null;
+		this.list = null;
 	}
 	
 	/**

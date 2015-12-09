@@ -51,7 +51,7 @@ public class gui extends JPanel implements ActionListener {
 	private SpellChecker checker;
 	private DefaultListModel listModel;
 	private String filepath;
-	private List input_files;
+	private String input_file;
 
 
 
@@ -78,8 +78,6 @@ public class gui extends JPanel implements ActionListener {
 		initialize();
 		checker = new SpellChecker();
 		checker.createDictionary(new File("dictionary.txt"));
-		
-		input_files = new List();
 	}
 
 	/**
@@ -305,7 +303,7 @@ public class gui extends JPanel implements ActionListener {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
-					input_files.insert(file.getName().substring(0, file.getName().length()-4));
+					input_file = file.getName().substring(0, file.getName().length()-4);
 					filepath = file.getAbsolutePath();
 					
 					isFileOpen = true;
@@ -344,46 +342,12 @@ public class gui extends JPanel implements ActionListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			
+				if(list.getModel().getSize()!=0)
+					write_files();
 				
-				String infile_name = input_files.toString();
-				Scanner listParser = new Scanner(infile_name);
-				listParser.useDelimiter("\n");
-				while(listParser.hasNext()){
-					String f = listParser.next();
-					File out_a = new File(f+"_added.txt");
-					File out_i = new File(f+"_ignored.txt");
-					try{
-						if(!out_a.exists())
-							out_a.createNewFile();
-						if(!out_i.exists())
-							out_i.createNewFile();
-					}
-					catch (IOException io){
-						io.printStackTrace();
-					}
-					
-					PrintWriter writer;
-					try {
-						writer = new PrintWriter(out_i, "UTF-8");
-						writer.println(checker.getIgnore());
-						writer.close();
-						
-						writer = new PrintWriter(out_a, "UTF-8");
-						writer.println(checker.getAdded());
-						writer.close();
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (UnsupportedEncodingException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					
-				}
-				
-				listParser.close();
 				System.exit(0);
-			}
+			}			
 	}
 	
 	/**
@@ -418,6 +382,11 @@ public class gui extends JPanel implements ActionListener {
 			checker.addToIgnore(word);
 		}
 		listModel.removeAllElements();
+		
+		// no more words selectable, write files and 
+		//block out add/ignore buttons, display open file button
+		write_files();
+		button_state(true);
 	}
 
 	private void list_ignore() {
@@ -426,6 +395,14 @@ public class gui extends JPanel implements ActionListener {
 		if(index >= 0)
 			listModel.remove(index);
 		checker.addToIgnore(word);
+		
+		// no more words selectable, write files and 
+		//block out add/ignore buttons, display open file button
+		if(listModel.size() == 0){
+			System.out.println("empty");
+			write_files();
+			button_state(true);
+		}
 	}
 
 	private void list_add_r() {
@@ -435,6 +412,11 @@ public class gui extends JPanel implements ActionListener {
 			checker.addToDictionary(word);
 		}
 		listModel.removeAllElements();
+		
+		// no more words selectable, write files and 
+		//block out add/ignore buttons, display open file button
+		write_files();
+		button_state(true);
 	}
 
 	private void list_add() {
@@ -442,7 +424,15 @@ public class gui extends JPanel implements ActionListener {
 		int index = list.getSelectedIndex();
 		if(index >= 0)
 			listModel.remove(index);
-		checker.addToDictionary(word);		
+		checker.addToDictionary(word);	
+		
+		// no more words selectable, write files and 
+		//block out add/ignore buttons, display open file button
+		if(listModel.size() == 0){
+			System.out.println("empty");
+			write_files();
+			button_state(true);
+		}
 	}
 
 	/**
@@ -465,5 +455,46 @@ public class gui extends JPanel implements ActionListener {
 				+ "\nS. Graf,"
 				+ "\nM. Kuna,"
 				+ "\nD. Rydstrom.", "About", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	//at the end of a file's operations, write to it's respective
+	//_added and _ignored text files, and prep the lists for a new 
+	//file
+	public void write_files(){
+		File out_a = new File(input_file+"_added.txt");
+		File out_i = new File(input_file+"_ignored.txt");
+		try{
+			if(!out_a.exists())
+				out_a.createNewFile();
+			if(!out_i.exists())
+				out_i.createNewFile();
+		}
+		catch (IOException io){
+			io.printStackTrace();
+		}
+		
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(out_i, "UTF-8");
+			writer.println(checker.getIgnore());
+			writer.close();
+			
+			writer = new PrintWriter(out_a, "UTF-8");
+			writer.println(checker.getAdded());
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		//set to false to user can't start on same file
+		isFileOpen = false;
+
+		// remove all words from add/ignored lists
+		checker.clearAdded();
+		checker.clearIgnore();
 	}
 }
