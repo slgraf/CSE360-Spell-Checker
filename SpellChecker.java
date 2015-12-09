@@ -66,7 +66,7 @@ public class SpellChecker {
 				inputList[hash(word)].delete(word);
 			}
 			
-			void addRemainngToDictionary(){
+			void addRemainingToDictionary(){
 				
 				manager.addRemaining(this.inputList);
 				for (int i = 0; i < 26; i++){

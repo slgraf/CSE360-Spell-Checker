@@ -7,6 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 import javax.swing.AbstractListModel;
@@ -47,6 +51,7 @@ public class gui extends JPanel implements ActionListener {
 	private SpellChecker checker;
 	private DefaultListModel listModel;
 	private String filepath;
+	private List input_files;
 
 
 
@@ -73,6 +78,8 @@ public class gui extends JPanel implements ActionListener {
 		initialize();
 		checker = new SpellChecker();
 		checker.createDictionary(new File("dictionary.txt"));
+		
+		input_files = new List();
 	}
 
 	/**
@@ -298,6 +305,7 @@ public class gui extends JPanel implements ActionListener {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
+					input_files.insert(file.getName().substring(0, file.getName().length()-4));
 					filepath = file.getAbsolutePath();
 					
 					isFileOpen = true;
@@ -318,6 +326,62 @@ public class gui extends JPanel implements ActionListener {
 			 * HALT PROGRAM
 			 */
 			if (e.getActionCommand() == "HALT"){
+				File dictionary = new File("dictionary.txt");
+
+				try{
+					if(!dictionary.exists())
+						dictionary.createNewFile();
+				}
+				catch (IOException io){};
+				try {
+					PrintWriter writer = new PrintWriter(dictionary, "UTF-8");
+					writer.println(checker.getDictionary());
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				String infile_name = input_files.toString();
+				Scanner listParser = new Scanner(infile_name);
+				listParser.useDelimiter("\n");
+				while(listParser.hasNext()){
+					String f = listParser.next();
+					File out_a = new File(f+"_added.txt");
+					File out_i = new File(f+"_ignored.txt");
+					try{
+						if(!out_a.exists())
+							out_a.createNewFile();
+						if(!out_i.exists())
+							out_i.createNewFile();
+					}
+					catch (IOException io){
+						io.printStackTrace();
+					}
+					
+					PrintWriter writer;
+					try {
+						writer = new PrintWriter(out_i, "UTF-8");
+						writer.println(checker.getIgnore());
+						writer.close();
+						
+						writer = new PrintWriter(out_a, "UTF-8");
+						writer.println(checker.getAdded());
+						writer.close();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (UnsupportedEncodingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				
+				listParser.close();
 				System.exit(0);
 			}
 	}
@@ -335,6 +399,7 @@ public class gui extends JPanel implements ActionListener {
 		{
 			listModel.addElement(listParser.next());
 		}
+		listParser.close();
 	}
 	
 	/**
@@ -347,10 +412,12 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_ignore_r() {
-		for(int index = 0; index < list.getModel().getSize(); index++){
-			list.remove(index);
+		String word = "";
+		for(int index = 0; index < listModel.getSize(); index++){
+			word = (String) listModel.getElementAt(index);
+			checker.addToIgnore(word);
 		}
-		checker.ignoreRemaining();
+		listModel.removeAllElements();
 	}
 
 	private void list_ignore() {
@@ -362,8 +429,12 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_add_r() {
-		// TODO
-		
+		String word = "";
+		for(int index = 0; index < listModel.getSize(); index++){
+			word = (String) listModel.getElementAt(index);
+			checker.addToDictionary(word);
+		}
+		listModel.removeAllElements();
 	}
 
 	private void list_add() {
