@@ -46,6 +46,7 @@ public class gui extends JPanel implements ActionListener {
 	private JPanel pnl_currFile, pnl_buttons, pnl_wordList;
 	private SpellChecker checker;
 	private DefaultListModel listModel;
+	private String filepath;
 
 
 
@@ -297,9 +298,10 @@ public class gui extends JPanel implements ActionListener {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
+					filepath = file.getAbsolutePath();
 					
 					isFileOpen = true;
-					lbl_filePath.setText("Open command worked!");
+					lbl_filePath.setText(filepath);
 				} else {
 					lbl_filePath.setText("Open command cancelled by user.");
 				}
@@ -324,7 +326,7 @@ public class gui extends JPanel implements ActionListener {
 	 * Adds items from file to the JList to display for user
 	 */
 	private void list_populate() {
-		File inputFile = new File("input.txt");
+		File inputFile = new File(filepath);
 		checker.createInputList(inputFile);
 		String inputList = checker.getInputList();
 		Scanner listParser = new Scanner(inputList);
@@ -333,8 +335,6 @@ public class gui extends JPanel implements ActionListener {
 		{
 			listModel.addElement(listParser.next());
 		}
-		//list.add(name, comp)
-		// TODO
 	}
 	
 	/**
