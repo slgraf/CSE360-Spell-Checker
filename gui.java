@@ -265,11 +265,20 @@ public class gui extends JPanel implements ActionListener {
 			 *  START SPELLCHECKER
 			 */
 			if (e.getActionCommand() == "START"){
-				if (isFileOpen == false){
+				
+				File checkFile = new File(filepath);
+				
+				if(checkFile.length() == 0)
+						displayEmptyWarning();
+				else if (isFileOpen == false){
 					displayWarning();
-				} else {
+				} else{
 					button_state(false);
 					list_populate();
+					if(listModel.isEmpty()){
+						displayCorrectWarning();
+						button_state(true);
+					}
 				}
 			}
 
@@ -316,7 +325,7 @@ public class gui extends JPanel implements ActionListener {
 					File file = fc.getSelectedFile();
 					input_file = file.getName().substring(0, file.getName().length()-4);
 					filepath = file.getAbsolutePath();
-					
+										
 					isFileOpen = true;
 					lbl_filePath.setText(filepath);
 				} else {
@@ -395,6 +404,7 @@ public class gui extends JPanel implements ActionListener {
 		
 		// no more words selectable, write files and 
 		//block out add/ignore buttons, display open file button
+		displayCheckedWarning();
 		write_files();
 		button_state(true);
 	}
@@ -410,6 +420,7 @@ public class gui extends JPanel implements ActionListener {
 		//block out add/ignore buttons, display open file button
 		if(listModel.size() == 0){
 			System.out.println("empty");
+			displayCheckedWarning();
 			write_files();
 			button_state(true);
 		}
@@ -425,6 +436,7 @@ public class gui extends JPanel implements ActionListener {
 		
 		// no more words selectable, write files and 
 		//block out add/ignore buttons, display open file button
+		displayCheckedWarning();
 		write_files();
 		button_state(true);
 	}
@@ -440,6 +452,7 @@ public class gui extends JPanel implements ActionListener {
 		//block out add/ignore buttons, display open file button
 		if(listModel.size() == 0){
 			System.out.println("empty");
+			displayCheckedWarning();
 			write_files();
 			button_state(true);
 		}
@@ -456,6 +469,36 @@ public class gui extends JPanel implements ActionListener {
 				, "Please select a file", JOptionPane.WARNING_MESSAGE);
 	}
 
+	/**
+	 * Show dialog box warning when the all words in the loaded file already exist in the dictionary. 
+	 */
+	private void displayCorrectWarning() {
+		JOptionPane.showMessageDialog(getFrm(), "All words in the file you selected are spelled correctly!"
+				+ "\nTo check another file..."
+				+ "\nChoose File < Open File...");
+	}
+
+	/**
+	 * Show dialog box warning when the all words in the loaded file have been checked. 
+	 */
+	private void displayCheckedWarning() {
+		JOptionPane.showMessageDialog(getFrm(), "You've finished checking all the words in the file!"
+				+ "\n"
+				+ "\nTo Check another file..."
+				+ "\nChoose File < Open File...");
+	}
+	
+	/**
+	 * Show dialog box warning when the all words in the loaded file already exist in the dictionary. 
+	 */
+	private void displayEmptyWarning() {
+		JOptionPane.showMessageDialog(getFrm(), "The file you chose is empty! Choose Another."
+				+ "\n"
+				+ "\nChoose File < Open File..."
+				, "Please select a file", JOptionPane.WARNING_MESSAGE);
+	}
+
+	
 	/**
 	 * Show program information dialog box
 	 */
