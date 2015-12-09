@@ -338,13 +338,15 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_ignore_r() {
-		// TODO
-		
+		for(int index = 0; index < list.getModel().getSize(); index++){
+			String word = (String) list.getSelectedValue();
+			
+		}
 	}
 
 	private void list_ignore() {
-		// TODO
-		
+		int index = list.getSelectedIndex();
+		list.remove(index);
 	}
 
 	private void list_add_r() {
