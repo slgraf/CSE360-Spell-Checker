@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
@@ -82,7 +83,7 @@ public class gui extends JPanel implements ActionListener {
 		getFrm().setType(Type.UTILITY);
 		getFrm().setAlwaysOnTop(true);
 		getFrm().setTitle("CSE 360 - SpellChecker - Final Project");
-		getFrm().setBounds(100, 100, 330, 320);
+		getFrm().setBounds(100, 100, 370, 320);
 		getFrm().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Menu Bar
@@ -171,15 +172,6 @@ public class gui extends JPanel implements ActionListener {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setPreferredSize(new Dimension(170, 231));
 		list.setMinimumSize(new Dimension(170, 231));
-		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"testing", "with", "fake", "random", "data"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		list.setBackground(Color.WHITE);
 		pnl_wordList.add(list);
@@ -332,6 +324,15 @@ public class gui extends JPanel implements ActionListener {
 	 * Adds items from file to the JList to display for user
 	 */
 	private void list_populate() {
+		File inputFile = new File("input.txt");
+		checker.createInputList(inputFile);
+		String inputList = checker.getInputList();
+		Scanner listParser = new Scanner(inputList);
+		listParser.useDelimiter("\n");
+		while(listParser.hasNext())
+		{
+			listModel.addElement(listParser.next());
+		}
 		//list.add(name, comp)
 		// TODO
 	}
