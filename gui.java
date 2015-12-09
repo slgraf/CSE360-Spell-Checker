@@ -344,14 +344,15 @@ public class gui extends JPanel implements ActionListener {
 
 	private void list_ignore_r() {
 		for(int index = 0; index < list.getModel().getSize(); index++){
-			String word = (String) list.getSelectedValue();
-			checker.ignoreRemaining();
+			list.remove(index);
 		}
+		checker.ignoreRemaining();
 	}
 
 	private void list_ignore() {
 		int index = list.getSelectedIndex();
 		list.remove(index);
+		String word = (String) list.getSelectedValue();
 		checker.addToIgnore(word);
 	}
 
