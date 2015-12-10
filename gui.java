@@ -337,30 +337,18 @@ public class gui extends JPanel implements ActionListener {
 			 * HALT PROGRAM
 			 */
 			if (e.getActionCommand() == "HALT"){
-				File dictionary = new File("dictionary.txt");
-				try{
-					if(!dictionary.exists())
-						dictionary.createNewFile();
-				}
-				catch (IOException io){};
-				try {
-					PrintWriter writer = new PrintWriter(dictionary, "UTF-8");
-					writer.println(checker.getDictionary());
-					writer.close();	
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			
-				if(list.getModel().getSize()!=0) {
+				boolean confirmation;
+				if(list.getModel().getSize()!=0)
+					confirmation = displayQuitUnfinishedWarning(); //asks if user wants to ignore remaining
+				else
+					confirmation = displayQuitWarning();
+				if(confirmation)
+				{
+					write_dictionary();
 					checker.ignoreRemaining();
 					write_files();
+					System.exit(0);
 				}
-				
-				System.exit(0);
 			}			
 	}
 	
@@ -396,19 +384,22 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_ignore() {
-		String word = list.getSelectedValue();
-		int index = list.getSelectedIndex();
-		if(index >= 0)
-			listModel.remove(index);
-		checker.addToIgnore(word);
+		if (!list.isSelectionEmpty())
+		{
+			String word = list.getSelectedValue();
+			int index = list.getSelectedIndex();
+			if(index >= 0)
+				listModel.remove(index);
+			checker.addToIgnore(word);
 		
-		// no more words selectable, write files and 
-		//block out add/ignore buttons, display open file button
-		if(listModel.size() == 0){
-			System.out.println("empty");
-			displayCheckedWarning();
-			write_files();
-			button_state(true);
+			// no more words selectable, write files and 
+			//block out add/ignore buttons, display open file button
+			if(listModel.size() == 0){
+				System.out.println("empty");
+				displayCheckedWarning();
+				write_files();
+				button_state(true);
+			}
 		}
 	}
 
@@ -428,19 +419,22 @@ public class gui extends JPanel implements ActionListener {
 	}
 
 	private void list_add() {
-		String word = list.getSelectedValue();
-		int index = list.getSelectedIndex();
-		if(index >= 0)
-			listModel.remove(index);
-		checker.addToDictionary(word);	
+		if (!list.isSelectionEmpty())
+		{
+			String word = list.getSelectedValue();
+			int index = list.getSelectedIndex();
+			if(index >= 0)
+				listModel.remove(index);
+			checker.addToDictionary(word);	
 		
-		// no more words selectable, write files and 
-		//block out add/ignore buttons, display open file button
-		if(listModel.size() == 0){
-			System.out.println("empty");
-			displayCheckedWarning();
-			write_files();
-			button_state(true);
+			// no more words selectable, write files and 
+			//block out add/ignore buttons, display open file button
+			if(listModel.size() == 0){
+				System.out.println("empty");
+				displayCheckedWarning();
+				write_files();
+				button_state(true);
+			}
 		}
 	}
 
@@ -472,6 +466,7 @@ public class gui extends JPanel implements ActionListener {
 				+ "\n"
 				+ "\nTo Check another file..."
 				+ "\nChoose File < Open File...");
+		lbl_filePath.setText("Waiting for file...");
 	}
 	
 	/**
@@ -482,6 +477,34 @@ public class gui extends JPanel implements ActionListener {
 				+ "\n"
 				+ "\nChoose File < Open File..."
 				, "Please select a file", JOptionPane.WARNING_MESSAGE);
+	}
+	
+	/**
+	 * Show dialog box warning when the all words in the loaded file already exist in the dictionary. 
+	 */
+	private boolean displayQuitWarning() {
+		boolean decision;
+		int answer = JOptionPane.showConfirmDialog(getFrm(), "Are you sure you want to quit?", 
+				"Quit Confirmation", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION)
+        	decision = true;
+        else
+        	decision = false;
+        return decision;
+	}
+	
+	private boolean displayQuitUnfinishedWarning() {
+		boolean decision;
+		int answer = JOptionPane.showConfirmDialog(getFrm(), 
+				"Are you sure you want to quit?"
+				+ "\n"
+				+ "The remaining words will automatically be ignored.", 
+				"Quit Confirmation", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION)
+        	decision = true;
+        else
+        	decision = false;
+        return decision;
 	}
 
 	
@@ -495,11 +518,36 @@ public class gui extends JPanel implements ActionListener {
 				+ "\nM. Kuna,"
 				+ "\nD. Rydstrom.", "About", JOptionPane.INFORMATION_MESSAGE);
 	}
+	/**
+	 * Writes out the dictionary file at the end of the program's execution
+	 */
+	private void write_dictionary()
+	{
+		File dictionary = new File("dictionary.txt");
+		try{
+			if(!dictionary.exists())
+				dictionary.createNewFile();
+		}
+		catch (IOException io){};
+		try {
+			PrintWriter writer = new PrintWriter(dictionary, "UTF-8");
+			writer.println(checker.getDictionary());
+			writer.close();	
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+	}
+	
 	
 	//at the end of a file's operations, write to it's respective
 	//_added and _ignored text files, and prep the lists for a new 
 	//file
-	public void write_files(){
+	private void write_files(){
 		File out_a = new File(input_file+"_added.txt");
 		File out_i = new File(input_file+"_ignored.txt");
 		try{
