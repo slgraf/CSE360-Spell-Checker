@@ -170,14 +170,6 @@ public class gui extends JPanel implements ActionListener {
 		
 		listModel = new DefaultListModel<String>();
 		list = new JList<String>(listModel);
-	//	list.setSize(new Dimension(170, 230));
-	//	list.setMaximumSize(new Dimension(170, 231));
-	//	list.setVisibleRowCount(12);
-	//	list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	//	list.setPreferredSize(new Dimension(170, 231));
-	//	list.setMinimumSize(new Dimension(170, 231));
-	//	list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-	//	list.setBackground(Color.WHITE);
 		pnl_wordList.add(list);
 		
 		JScrollPane scrollPane = new JScrollPane();
