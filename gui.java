@@ -337,8 +337,10 @@ public class gui extends JPanel implements ActionListener {
 				if(confirmation)
 				{
 					write_dictionary();
-					checker.ignoreRemaining();
-					write_files();
+					if(isFileOpen){
+						checker.ignoreRemaining();
+						write_files();
+					}
 					System.exit(0);
 				}
 			}			
@@ -373,6 +375,7 @@ public class gui extends JPanel implements ActionListener {
 		displayCheckedWarning();
 		write_files();
 		button_state(true);
+		isFileOpen = false;
 	}
 
 	private void list_ignore() {
@@ -391,6 +394,7 @@ public class gui extends JPanel implements ActionListener {
 				displayCheckedWarning();
 				write_files();
 				button_state(true);
+				isFileOpen = false;
 			}
 		}
 	}
@@ -408,6 +412,7 @@ public class gui extends JPanel implements ActionListener {
 		displayCheckedWarning();
 		write_files();
 		button_state(true);
+		isFileOpen = false;
 	}
 
 	private void list_add() {
@@ -426,6 +431,7 @@ public class gui extends JPanel implements ActionListener {
 				displayCheckedWarning();
 				write_files();
 				button_state(true);
+				isFileOpen = false;
 			}
 		}
 	}
