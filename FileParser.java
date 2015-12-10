@@ -62,7 +62,7 @@ public class FileParser
 			{
 				int index = hash(word);
 				try{
-					if(word.indexOf('|') == word.length()-1 ||word.indexOf('-') == word.length()-1)
+					if(word.indexOf('|') == word.length()-1 ||word.indexOf('-') == word.length()-1 || word.indexOf('\'') == word.length()-1)
 					{
 						word = word.substring(0, word.length()-1);
 					}
