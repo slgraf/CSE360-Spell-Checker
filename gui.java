@@ -112,12 +112,14 @@ public class gui extends JPanel implements ActionListener {
 			btn_add_r.setEnabled(false);
 			btn_ignore.setEnabled(false);
 			btn_ignore_r.setEnabled(false);
+			mi_OpenFile.setEnabled(true);
 		} else {
 			btn_start.setEnabled(false);
 			btn_add.setEnabled(true);
 			btn_add_r.setEnabled(true);
 			btn_ignore.setEnabled(true);
 			btn_ignore_r.setEnabled(true);
+			mi_OpenFile.setEnabled(false);
 		}
 	}
 
