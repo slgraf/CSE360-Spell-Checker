@@ -10,10 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
 import java.util.Scanner;
 
-import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -28,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
@@ -50,7 +47,7 @@ public class gui extends JPanel implements ActionListener {
 	private JButton btn_start, btn_add, btn_add_r, btn_ignore, btn_ignore_r, btn_quit;
 	private JPanel pnl_currFile, pnl_buttons, pnl_wordList;
 	private SpellChecker checker;
-	private DefaultListModel listModel;
+	private DefaultListModel<String> listModel;
 	private String filepath;
 	private String input_file;
 
@@ -171,8 +168,8 @@ public class gui extends JPanel implements ActionListener {
 		pnl_wordList = new JPanel();
 		getFrm().getContentPane().add(pnl_wordList, BorderLayout.CENTER);
 		
-		listModel = new DefaultListModel();
-		list = new JList(listModel);
+		listModel = new DefaultListModel<String>();
+		list = new JList<String>(listModel);
 	//	list.setSize(new Dimension(170, 230));
 	//	list.setMaximumSize(new Dimension(170, 231));
 	//	list.setVisibleRowCount(12);
@@ -287,7 +284,6 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "ADD"){
 				list_add();
-				list_update();
 			}
 			
 			/*
@@ -295,7 +291,6 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "ADD_R"){
 				list_add_r();
-				list_update();
 			}
 			
 			/*
@@ -303,7 +298,6 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "IGNORE"){
 				list_ignore();
-				list_update();
 			}
 			
 			/*
@@ -311,7 +305,6 @@ public class gui extends JPanel implements ActionListener {
 			 */
 			if (e.getActionCommand() == "IGNORE_R"){
 				list_ignore_r();
-				list_update();
 			}
 
 			/*
@@ -362,8 +355,10 @@ public class gui extends JPanel implements ActionListener {
 					e1.printStackTrace();
 				}
 			
-				if(list.getModel().getSize()!=0)
+				if(list.getModel().getSize()!=0) {
+					checker.ignoreRemaining();
 					write_files();
+				}
 				
 				System.exit(0);
 			}			
@@ -376,22 +371,13 @@ public class gui extends JPanel implements ActionListener {
 		File inputFile = new File(filepath);
 		checker.createInputList(inputFile);
 		String inputList = checker.getInputList();
-		Scanner listParser = new Scanner(inputList);
-		listParser.useDelimiter("\n");
+		Scanner listParser = new Scanner(inputList); //inputs list of words separated by \n
+		listParser.useDelimiter("\n"); //uses delimiter to parse the lists and add each one
 		while(listParser.hasNext())
 		{
 			listModel.addElement(listParser.next());
 		}
 		listParser.close();
-	}
-	
-	/**
-	 * Updates the display for the user of the JList
-	 * (called by JList container listener)
-	 */
-	private void list_update() {
-		// TODO
-		
 	}
 
 	private void list_ignore_r() {

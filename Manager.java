@@ -114,7 +114,6 @@ public class Manager{
 	public void updateInputList(List inputList[]){
 		for(int index = 0; index < 26; index++){
 				inputList[index].delete(dictionary[index]);
-				inputList[index].delete(ignore[index]);
 		}
 	}
 	

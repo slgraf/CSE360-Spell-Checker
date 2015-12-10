@@ -24,7 +24,6 @@ public class FileParser
 		public void parse(List[] newList, File file) throws FileNotFoundException
 		{
 			String line;
-			int index;
 			scan = new Scanner(file);
 			scan.useDelimiter("[^\\p{Alpha}-|']+"); //remove any characters that aren't a series of letters that might contain either - or '
 			while (scan.hasNext())
@@ -63,6 +62,10 @@ public class FileParser
 			{
 				int index = hash(word);
 				try{
+					if(word.indexOf('|') == word.length()-1 ||word.indexOf('-') == word.length()-1)
+					{
+						word = word.substring(0, word.length()-1);
+					}
 					newList[index].insert(word);
 				}
 				catch(ArrayIndexOutOfBoundsException e ){
